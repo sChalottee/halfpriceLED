@@ -1,0 +1,60 @@
+.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.headerStyle {
+    background-color: #f5f5f5;
+    color: black;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.content {
+    width: 30%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.currentMenu,
+.addCategory,
+.addProduct {
+    margin-bottom: 50px;
+}
+
+Form.Item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+Form.Item input,
+.Form.Item .Select,
+Form.Item .InputNumber,
+Form.Item .TextArea {
+    width: 55%;
+    margin-right: 10px;
+}
+
+Button {
+    background-color: #c240d4;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+Button:hover {
+    background-color: #c240d4;
+}
+
+.inputSize {
+    width: 60%;
+}
