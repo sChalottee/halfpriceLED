@@ -16,6 +16,9 @@ const insertCategoryQuery = `
   INSERT INTO Categorie (Categorie_name)
             VALUES (?)
 `;
+const returnCategoryIdQuery = `
+    SELECT Categorie_id FROM Categorie WHERE Categorie_name = ?
+`;
 
 const deleteCategoryQuery = `
     DELETE FROM Categorie WHERE Categorie_id = ?`;
@@ -27,6 +30,9 @@ const insertProductQuery = `
 INSERT INTO Product (Product_name, Product_price, Product_explanation, Product_image) VALUES (?, ?, ?, ?)`;
 // const insertProductQuery = `
 // INSERT INTO Product (Product_name, Product_price, Product_explanation) VALUES (?, ?, ?)`;
+
+const linkCategoryProductQuery =
+    "INSERT INTO CategorieProduct (Categorie_id, Product_id) VALUES (?, ?)";
 
 const deleteProductQuery = `
 DELETE FROM Product WHERE id = ?`;
@@ -51,8 +57,17 @@ async function getAllProduct() {
             if (err) {
                 reject(err);
             } else {
-                let product = rows.map((row) => row["product_name"]);
-                resolve(product);
+                let products = rows.map((row) => {
+                    return {
+                        id: row["Product_id"],
+                        name: row["Product_name"],
+                        price: row["Product_price"],
+                        explanation: row["Product_explanation"],
+                        image: row["Product_Image"],
+                    };
+                });
+                console.log(products);
+                resolve(products);
             }
         });
     });
@@ -83,14 +98,43 @@ async function deleteCategory(id) {
 
 async function insertProduct(
     productName,
-    productCategory,
+    productPrice,
     productExplanation,
     productImage
 ) {
     return new Promise((resolve, reject) => {
         db.run(
             insertProductQuery,
-            [productName, productCategory, productExplanation, productImage],
+            [productName, productPrice, productExplanation, productImage],
+            function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            }
+        );
+    });
+}
+
+async function returnCategoryId(category) {
+    return new Promise((resolve, reject) => {
+        db.get(returnCategoryIdQuery, [category], function (err, row) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row["Categorie_id"]);
+            }
+        });
+    });
+}
+
+async function insertProductCategory(categoryId, productId) {
+    console.log(categoryId);
+    return new Promise((resolve, reject) => {
+        db.run(
+            linkCategoryProductQuery,
+            [categoryId, productId],
             function (err) {
                 if (err) {
                     reject(err);
@@ -114,18 +158,6 @@ async function deleteProduct(id) {
     });
 }
 
-// async function insertImage(Product_image) {
-//     return new Promise((resolve, reject) => {
-//         db.run(insertImageQuery, [Product_image], (err) => {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 resolve(this.lastID);
-//             }
-//         });
-//     });
-// }
-
 function close() {
     db.close((err) => {
         if (err) {
@@ -139,9 +171,11 @@ function close() {
 export {
     getAllCategories,
     insertCategory,
+    returnCategoryId,
     deleteCategory,
     getAllProduct,
     insertProduct,
+    insertProductCategory,
     deleteProduct,
     close,
 };

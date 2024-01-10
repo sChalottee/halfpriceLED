@@ -19,6 +19,7 @@ const { Header, Content } = Layout;
 const { TextArea } = Input;
 
 const normFile = (e) => {
+    console.log("hello");
     if (Array.isArray(e)) {
         return e;
     }
@@ -52,29 +53,46 @@ const onFinishAddCategory = (values) => {
         });
 };
 
-// const images = [];
+let images = [];
 
-// const onFinishAddImage = async (value) => {
-//     console.log(value);
-//     images.push(value);
-// };
+const onChangeAddImage = async (value) => {
+    images = value.fileList;
+};
 
 const onFinishAddProduct = async (values) => {
     console.log(values);
-    // if (values.file) {
-    //     const formData = new FormData();
-    //     formData.append("file", values.file[0].originFileObj);
-    //     await uploadFile(formData);
-    // }
-    // if (images) {
-    //     uploadFile(images);
-    // }
+    let imagesUrls = [];
+    // 1. Upload image (save images to server)
+    // Using Axios to call '/product/image'
+    // image upload
+
+    // 2. Pass paths (urls) of images to imageUrls array
+    // const imageUrls = []; //한번에 올린 코드의 path로 이루어진 배열로 만들자.
+
+    const formData = new FormData();
+    images.forEach((image) => {
+        formData.append("images", image.originFileObj);
+    });
+
+    try {
+        const response = await axios.post("/product/image", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        imagesUrls = response.data;
+    } catch (error) {
+        console.error("error", error);
+        return;
+    }
+
     axios
         .post("/product", {
             name: values.productName,
             price: values.productPrice,
             explanation: values.productExplanation,
-            // images: values.productImage,
+            images: JSON.stringify(imagesUrls),
+            category: values.category,
         })
         .then((response) => {
             console.log(response);
@@ -84,45 +102,12 @@ const onFinishAddProduct = async (values) => {
         });
 };
 
-// const uploadFile = async (value) => {
-//     try {
-//         console.log(value);
-//         const formData = new FormData();
-//         formData.append("image-file", value);
-//         axios
-//             .post("/product/image", formData, {
-//                 headers: {
-//                     "Content-Type": "multipart/form-data",
-//                 },
-//             })
-//             .then((response) => {
-//                 message.success(response.formData.message);
-//             })
-//             .catch((error) => {
-//                 message.error(error);
-//             });
-//     } catch (e) {
-//         console.log(e);
-//     }
-// };
-
 function Admin() {
     const [categories, setCategories] = useState([]);
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
-
-    // const handleUpload = async ({ file, onSuccess, onError }) => {
-    //     try {
-    //         const response = await uploadFile(file);
-    //         console.log(file);
-    //         onSuccess(response, file);
-    //     } catch (error) {
-    //         console.error(error);
-    //         onError(error);
-    //     }
-    // };
 
     function fetchAllCategories() {
         axios
@@ -188,7 +173,6 @@ function Admin() {
                     </Form>
                     <Form
                         className="addProductImage"
-                        // onFinish={onFinishAddImage}
                         encType="multipart/form-data"
                     >
                         <h2>상품 추가</h2>
@@ -197,7 +181,10 @@ function Admin() {
                             getValueFromEvent={normFile}
                         >
                             <Upload
-                                action="/product/image"
+                                onChange={onChangeAddImage}
+                                action={(file) => {
+                                    console.log(file);
+                                }}
                                 listType="picture-card"
                                 name="imageFile"
                             >

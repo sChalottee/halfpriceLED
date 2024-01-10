@@ -3,9 +3,12 @@ import path from "path";
 import {
     deleteProduct,
     getAllCategories,
+    getAllProduct,
     insertProduct,
     insertCategory,
+    returnCategoryId,
     deleteCategory,
+    insertProductCategory,
 } from "./halfdb.js";
 // import Busboy from "busboy";
 import multer from "multer";
@@ -29,18 +32,10 @@ app.use(express.static(path.join(__dirname, "react-project/build")));
 app.use(express.json());
 app.use("/product/image", express.static(path.join(__dirname, "uploads/")));
 
-app.post("/product/image", upload.single("imageFile"), async (req, res) => {
-    console.log(req.file);
-    res.send(req.file.path);
-    // onFinishAddProduct(req.file.path);
-
-    // const ProductImage = {
-    //     path: req.file.path,
-    // };
-    // console.log(ProductImage);
-    // const Product_image = JSON.stringify(ProductImage);
-    // console.log(Product_image);
-    // res.send(Product_image);
+app.post("/product/image", upload.array("images"), async (req, res) => {
+    const files = req.files;
+    let paths = files.map((file) => `/product/image/${file.filename}`);
+    res.send(paths);
 });
 
 app.get("/categories", async (req, res) => {
@@ -61,18 +56,23 @@ app.post("/categories/delete", async (req, res) => {
     console.log(categories);
     res.sendStatus(200);
 });
-// app.get("/product", async (req, res) => {
-//     const detail = await getAllProduct();
-//     res.send(detail);
-// });
+
+app.get("/product", async (req, res) => {
+    const detail = await getAllProduct();
+    res.send(detail);
+});
 
 app.post("/product", async (req, res) => {
-    const productInfo = await insertProduct(
+    console.log(req.body);
+    const productRowId = await insertProduct(
         req.body.name,
         req.body.price,
-        req.body.explanation
+        req.body.explanation,
+        req.body.images
     );
-    res.send(productInfo);
+    const categoryRowId = await returnCategoryId(req.body.category);
+    await insertProductCategory(categoryRowId, productRowId);
+    res.sendStatus(200);
 });
 
 app.post("/product/delete", async (req, res) => {
