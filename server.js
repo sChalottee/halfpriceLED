@@ -9,6 +9,7 @@ import {
     returnCategoryId,
     deleteCategory,
     insertProductCategory,
+    temporaryIntegrationTable,
 } from "./halfdb.js";
 // import Busboy from "busboy";
 import multer from "multer";
@@ -57,9 +58,24 @@ app.post("/categories/delete", async (req, res) => {
     res.sendStatus(200);
 });
 
+// app.get("/product", async (req, res) => {
+//     const product = await getAllProduct();
+//     // const categoryRowId = await returnCategoryId(req.body.category);
+//     res.send(product);
+//     const AllProductInfo = await temporaryIntegrationTable();
+//     // res.send(categoryRowId);
+//     res.send(AllProductInfo);
+// });
+
 app.get("/product", async (req, res) => {
-    const detail = await getAllProduct();
-    res.send(detail);
+    try {
+        const product = await getAllProduct();
+        const AllProductInfo = await temporaryIntegrationTable();
+        res.send({ product, AllProductInfo });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 app.post("/product", async (req, res) => {
@@ -72,8 +88,20 @@ app.post("/product", async (req, res) => {
     );
     const categoryRowId = await returnCategoryId(req.body.category);
     await insertProductCategory(categoryRowId, productRowId);
+    await temporaryIntegrationTable();
     res.sendStatus(200);
 });
+
+// categoryId 로 product 를 받아온다.
+// app.get("/product/:categoryId", async (req, res) => {
+//     try {
+//         const categoryId = req.params.categoryId;
+//         console.log(categoryId);
+//         res.send(categoryId);
+//     } catch (error) {
+//         res.status(500);
+//     }
+// });
 
 app.post("/product/delete", async (req, res) => {
     const productInfo = await deleteProduct(req.body.id);

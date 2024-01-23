@@ -28,16 +28,18 @@ const selectProductQuery = `
 `;
 const insertProductQuery = `
 INSERT INTO Product (Product_name, Product_price, Product_explanation, Product_image) VALUES (?, ?, ?, ?)`;
-// const insertProductQuery = `
-// INSERT INTO Product (Product_name, Product_price, Product_explanation) VALUES (?, ?, ?)`;
 
-const linkCategoryProductQuery =
-    "INSERT INTO CategorieProduct (Categorie_id, Product_id) VALUES (?, ?)";
+const linkCategoryProductQuery = `INSERT INTO CategorieProduct (Categorie_id, Product_id) VALUES (?, ?)`;
 
 const deleteProductQuery = `
 DELETE FROM Product WHERE id = ?`;
 
-// const insertImageQuery = `INSERT INTO Product (Product_image) VALUES (?)`;
+const temporaryIntegrationTableQuery = `
+SELECT *
+FROM Categorie
+INNER JOIN CategorieProduct ON Categorie.Categorie_id = CategorieProduct.Categorie_id
+INNER JOIN Product ON CategorieProduct.Product_id = Product.Product_id
+`;
 
 async function getAllCategories() {
     return new Promise((resolve, reject) => {
@@ -117,6 +119,13 @@ async function insertProduct(
     });
 }
 
+/**
+ * 카테고리 이름으로 카테고리 ID를 반환하는 함수
+ * getCategoryIDByCategoryName()
+ *
+ * @param {} category
+ * @returns
+ */
 async function returnCategoryId(category) {
     return new Promise((resolve, reject) => {
         db.get(returnCategoryIdQuery, [category], function (err, row) {
@@ -143,6 +152,30 @@ async function insertProductCategory(categoryId, productId) {
                 }
             }
         );
+    });
+}
+
+async function temporaryIntegrationTable() {
+    return new Promise((resolve, reject) => {
+        db.all(temporaryIntegrationTableQuery, [], function (err, rows) {
+            if (err) {
+                reject(err);
+            } else {
+                let products = rows.map((row) => {
+                    return {
+                        id: row["Product_id"],
+                        name: row["Product_name"],
+                        price: row["Product_price"],
+                        explanation: row["Product_explanation"],
+                        image: row["Product_Image"],
+                        categoryName: row["Categorie_name"],
+                        categoryId: row["Categorie_id"],
+                    };
+                });
+                console.log(products);
+                resolve(products);
+            }
+        });
     });
 }
 
@@ -176,6 +209,7 @@ export {
     getAllProduct,
     insertProduct,
     insertProductCategory,
+    temporaryIntegrationTable,
     deleteProduct,
     close,
 };
