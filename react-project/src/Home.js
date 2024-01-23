@@ -8,7 +8,7 @@ const { Header, Footer, Content } = Layout;
 
 function Home() {
     const [categories, setCategories] = useState([]);
-    const [productsInfo, setProductsInfo] = useState([]);
+    // const [productsInfo, setProductsInfo] = useState([]);
     const [parsedImages, setParsedImages] = useState([]);
     const [AllProductInfoArray, setAllPrductInfoArray] = useState([]);
 
@@ -16,22 +16,26 @@ function Home() {
     //     "/product/image/1704000363719.png",
     //     "/product/image/1704005546456.png",
     // ];
-    console.log(productsInfo);
-    // console.log(AllProductInfoArray);
 
     function fetchAllProducts() {
         axios
             .get("/product")
             .then((response) => {
                 console.log(response);
-                setProductsInfo(response.data);
+                // setProductsInfo(response.data);
 
-                const parsedImages = response.data.map((product) => {
-                    const imagesArray = JSON.parse(product.image);
-                    return imagesArray[0];
-                });
+                const parsedImages = response.data.AllProductInfo.map(
+                    (product) => {
+                        const imagesArray = JSON.parse(product.image);
+                        // console.log(imagesArray);
+                        // console.log(imagesArray[0]);
+                        return imagesArray[0];
+                    }
+                );
                 setParsedImages(parsedImages);
-                // console.log(parsedImages);
+                console.log(parsedImages);
+                const AllProductArray = response.data.AllProductInfo;
+                setAllPrductInfoArray(AllProductArray);
             })
             .catch((error) => {
                 console.log(error);
@@ -51,45 +55,31 @@ function Home() {
             });
     }
     console.log(categories);
-    function searchCategory() {
-        axios
-            .get("/product")
-            .then((response) => {
-                console.log(response.data);
-                console.log(response.data.AllProductInfo[0].categoryId);
-                const AllProductArray = response.data.AllProductInfo;
-                // const category = response.data;
-                setAllPrductInfoArray(AllProductArray);
-                // const AllProductInfoArray = response.data.AllproductInfo;
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    console.log(AllProductInfoArray);
-    for (let element of AllProductInfoArray) {
-        console.log(element.categoryId);
-        // const categoryNumber = element.categoryId
-    }
-
-    // function CategoryOfProduct(categoryId) {
+    // function searchCategory() {
     //     axios
-    //         .get(`/product/${categoryId}`)
+    //         .get("/product")
     //         .then((response) => {
-    //             console.log(response);
-    //             console.log(response.data);
+    //             // console.log(response.data);
+    //             // console.log(response.data.AllProductInfo[0].categoryId);
+    //             const AllProductArray = response.data.AllProductInfo;
+    //             // const category = response.data;
+    //             setAllPrductInfoArray(AllProductArray);
+    //             // const AllProductInfoArray = response.data.AllproductInfo;
     //         })
     //         .catch((error) => {
     //             console.log(error);
     //         });
     // }
 
+    console.log(AllProductInfoArray);
+    // for (let element of AllProductInfoArray) {
+    //     console.log(element.categoryId);
+    //     // const categoryNumber = element.categoryId
+    // }
+
     useEffect(() => {
         fetchAllCategories();
         fetchAllProducts();
-        searchCategory();
-        // CategoryOfProduct(categoryId);
     }, []);
 
     const HomeComponent = (
@@ -200,7 +190,28 @@ function Home() {
                             ))}
                         </div>
                     </div>
-                    {categories.map((categoryName, index) => (
+                    {AllProductInfoArray.map((category, index) => (
+                        <div key={index} className={category.categoryName}>
+                            <h2>{category.categoryName}</h2>
+                            <div className="categoryImg">
+                                {JSON.parse(category.image).map(
+                                    (src, imgIndex) => (
+                                        <div key={imgIndex}>
+                                            <Image
+                                                width={200}
+                                                src={src}
+                                                alt={`이미지 ${imgIndex + 1}`}
+                                            />
+                                            <span>{category.name}</span>
+                                            <span>{category.price}</span>
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* {categories.map((categoryName, index) => (
                         <div key={index} className={categoryName}>
                             <h2>{categoryName}</h2>
                             <div className="categoryImg">
@@ -214,20 +225,7 @@ function Home() {
                                 ))}
                             </div>
                         </div>
-                    ))}
-                    {/* <div className="livingRoom">
-                        <h2>거실 조명</h2>
-                        <div className="livingRoomImg">
-                            {parsedImages.map((src, index) => (
-                                <Image
-                                    key={index}
-                                    width={200}
-                                    src={src}
-                                    alt={`이미지 ${index + 1}`}
-                                />
-                            ))}
-                        </div>
-                    </div> */}
+                    ))} */}
 
                     {/* for loop (category_id, category_name, allproduct)
                     <div>
