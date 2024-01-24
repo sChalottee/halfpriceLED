@@ -12,18 +12,10 @@ function Home() {
     const [parsedImages, setParsedImages] = useState([]);
     const [AllProductInfoArray, setAllPrductInfoArray] = useState([]);
 
-    // const productInfo = [
-    //     "/product/image/1704000363719.png",
-    //     "/product/image/1704005546456.png",
-    // ];
-
     function fetchAllProducts() {
         axios
             .get("/product")
             .then((response) => {
-                console.log(response);
-                // setProductsInfo(response.data);
-
                 const parsedImages = response.data.AllProductInfo.map(
                     (product) => {
                         const imagesArray = JSON.parse(product.image);
@@ -54,28 +46,6 @@ function Home() {
                 console.log(error);
             });
     }
-    console.log(categories);
-    // function searchCategory() {
-    //     axios
-    //         .get("/product")
-    //         .then((response) => {
-    //             // console.log(response.data);
-    //             // console.log(response.data.AllProductInfo[0].categoryId);
-    //             const AllProductArray = response.data.AllProductInfo;
-    //             // const category = response.data;
-    //             setAllPrductInfoArray(AllProductArray);
-    //             // const AllProductInfoArray = response.data.AllproductInfo;
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }
-
-    console.log(AllProductInfoArray);
-    // for (let element of AllProductInfoArray) {
-    //     console.log(element.categoryId);
-    //     // const categoryNumber = element.categoryId
-    // }
 
     useEffect(() => {
         fetchAllCategories();
@@ -108,14 +78,11 @@ function Home() {
                                 key: index + 1,
                                 onClick: () => {
                                     console.log(`${categoryName} 클릭`);
-                                    const categoryElement =
+                                    let categoryElement =
                                         document.querySelector(
                                             `.${categoryName}`
                                         );
-                                    console.log(
-                                        "categoryElement:",
-                                        categoryElement
-                                    );
+                                    console.log(categoryElement);
                                     if (categoryElement) {
                                         categoryElement.scrollIntoView({
                                             behavior: "smooth",
@@ -124,57 +91,6 @@ function Home() {
                                 },
                             };
                         })}
-                        // items={categories.map((label, index) => {
-                        //     return {
-                        //         label: label,
-                        //         key: index + 1,
-                        //         onClick: () => {
-                        //             if (label === "거실 조명") {
-                        //                 document
-                        //                     .querySelector(".livingRoom")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "방 조명") {
-                        //                 document
-                        //                     .querySelector(".generalRoom")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "식탁 · 포인트") {
-                        //                 document
-                        //                     .querySelector(".tablePoint")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "주방 · 욕실 · 레일") {
-                        //                 document
-                        //                     .querySelector(".kitchenBathRail")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "현관 · 베란다") {
-                        //                 document
-                        //                     .querySelector(".entranceVeranda")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "매입") {
-                        //                 document
-                        //                     .querySelector(".landfill")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             } else if (label === "산업 조명") {
-                        //                 document
-                        //                     .querySelector(".industrial")
-                        //                     .scrollIntoView({
-                        //                         behavior: "smooth",
-                        //                     });
-                        //             }
-                        //         },
-                        //     };
-                        // })}
                     />
                 </nav>
                 <Content className="contentStyle">
@@ -219,11 +135,16 @@ function Home() {
                                                         }`}
                                                     />
                                                     <div>
-                                                        <span>
-                                                            {product.name}
+                                                        <p>
+                                                            s{product.name}
                                                             {"  "}
                                                             {product.price}원
-                                                        </span>
+                                                        </p>
+                                                        <p>
+                                                            {
+                                                                product.explanation
+                                                            }
+                                                        </p>
                                                     </div>
                                                 </div>
                                             );
@@ -234,15 +155,6 @@ function Home() {
                             </div>
                         ))}
                     </div>
-
-                    {/* for loop (category_id, category_name, allproduct)
-                    <div>
-                        <h2>category_name</h2>
-                        <div>
-                            p = api call (product/category_id) for loop (p) if
-                            (product)
-                        </div>
-                    </div> */}
                 </Content>
                 <Footer className="footerStyle">
                     <div>전화번호 : 010 - 1111 - 2222</div>
