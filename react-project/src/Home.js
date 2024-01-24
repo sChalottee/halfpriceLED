@@ -184,48 +184,56 @@ function Home() {
                                 <Image
                                     key={index}
                                     width={200}
+                                    height={150}
                                     src={src}
                                     alt={`이미지 ${index + 1}`}
                                 />
                             ))}
                         </div>
                     </div>
-                    {AllProductInfoArray.map((category, index) => (
-                        <div key={index} className={category.categoryName}>
-                            <h2>{category.categoryName}</h2>
-                            <div className="categoryImg">
-                                {JSON.parse(category.image).map(
-                                    (src, imgIndex) => (
-                                        <div key={imgIndex}>
-                                            <Image
-                                                width={200}
-                                                src={src}
-                                                alt={`이미지 ${imgIndex + 1}`}
-                                            />
-                                            <span>{category.name}</span>
-                                            <span>{category.price}</span>
-                                        </div>
-                                    )
+                    <div>
+                        {categories.map((categoryName, index) => (
+                            <div key={index} className={categoryName}>
+                                <h2>{categoryName}</h2>
+                                {AllProductInfoArray.map(
+                                    (product, productIndex) => {
+                                        if (
+                                            product.categoryName ===
+                                            categoryName
+                                        ) {
+                                            return (
+                                                <div
+                                                    key={productIndex}
+                                                    className="product-container"
+                                                >
+                                                    <Image
+                                                        width={400}
+                                                        height={300}
+                                                        src={
+                                                            JSON.parse(
+                                                                product.image
+                                                            )[0]
+                                                        }
+                                                        alt={`이미지 ${
+                                                            productIndex + 1
+                                                        }`}
+                                                    />
+                                                    <div>
+                                                        <span>
+                                                            {product.name}
+                                                            {"  "}
+                                                            {product.price}원
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }
                                 )}
                             </div>
-                        </div>
-                    ))}
-
-                    {/* {categories.map((categoryName, index) => (
-                        <div key={index} className={categoryName}>
-                            <h2>{categoryName}</h2>
-                            <div className="categoryImg">
-                                {parsedImages.map((src, imgIndex) => (
-                                    <Image
-                                        key={imgIndex}
-                                        width={200}
-                                        src={src}
-                                        alt={`이미지 ${imgIndex + 1}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    ))} */}
+                        ))}
+                    </div>
 
                     {/* for loop (category_id, category_name, allproduct)
                     <div>
