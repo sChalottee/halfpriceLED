@@ -94,13 +94,13 @@ function Home() {
                     />
                 </nav>
                 <Content className="contentStyle">
-                    <Carousel autoplay>
+                    <Carousel autoplay autoplaySpeed={2000}>
                         {parsedImages.map((src, index) => (
                             <div key={index}>
                                 <Image
                                     // key={index}
-                                    width={800}
-                                    height={600}
+                                    width={600}
+                                    height={450}
                                     src={src}
                                     alt={`이미지 ${index + 1}`}
                                 />
@@ -112,47 +112,50 @@ function Home() {
                         {categories.map((categoryName, index) => (
                             <div key={index} className={categoryName}>
                                 <h2>{categoryName}</h2>
-                                {AllProductInfoArray.map(
-                                    (product, productIndex) => {
-                                        if (
-                                            product.categoryName ===
-                                            categoryName
-                                        ) {
-                                            return (
-                                                <div
-                                                    key={productIndex}
-                                                    className="product-container"
-                                                >
-                                                    <Image
-                                                        width={400}
-                                                        height={300}
-                                                        src={
-                                                            JSON.parse(
-                                                                product.image
-                                                            )[0]
-                                                        }
-                                                        alt={`이미지 ${
-                                                            productIndex + 1
-                                                        }`}
-                                                    />
-                                                    <div>
-                                                        <p>
-                                                            s{product.name}
-                                                            {"  "}
-                                                            {product.price}원
-                                                        </p>
-                                                        <p>
-                                                            {
-                                                                product.explanation
+                                <div className="product-container-flex">
+                                    {AllProductInfoArray.map(
+                                        (product, productIndex) => {
+                                            if (
+                                                product.categoryName ===
+                                                categoryName
+                                            ) {
+                                                return (
+                                                    <div
+                                                        key={productIndex}
+                                                        className="product-item"
+                                                    >
+                                                        <Image
+                                                            width={300}
+                                                            height={200}
+                                                            src={
+                                                                JSON.parse(
+                                                                    product.image
+                                                                )[0]
                                                             }
-                                                        </p>
+                                                            alt={`이미지 ${
+                                                                productIndex + 1
+                                                            }`}
+                                                        />
+                                                        <div>
+                                                            <h3>
+                                                                {product.name}
+                                                                {"  "}
+                                                                {product.price}
+                                                                원
+                                                            </h3>
+                                                            <h3>
+                                                                {
+                                                                    product.explanation
+                                                                }
+                                                            </h3>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            );
+                                                );
+                                            }
+                                            return null;
                                         }
-                                        return null;
-                                    }
-                                )}
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
