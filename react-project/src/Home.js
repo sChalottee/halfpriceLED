@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Menu, Layout, Space, Image } from "antd";
+import { Menu, Layout, Space, Image, Carousel } from "antd";
 import "./reset.css";
 import "./Home.css";
 import axios from "axios";
@@ -94,19 +94,20 @@ function Home() {
                     />
                 </nav>
                 <Content className="contentStyle">
-                    <div>
-                        <div>
-                            {parsedImages.map((src, index) => (
+                    <Carousel autoplay>
+                        {parsedImages.map((src, index) => (
+                            <div key={index}>
                                 <Image
-                                    key={index}
-                                    width={200}
-                                    height={150}
+                                    // key={index}
+                                    width={800}
+                                    height={600}
                                     src={src}
                                     alt={`이미지 ${index + 1}`}
                                 />
-                            ))}
-                        </div>
-                    </div>
+                            </div>
+                        ))}
+                    </Carousel>
+
                     <div>
                         {categories.map((categoryName, index) => (
                             <div key={index} className={categoryName}>
