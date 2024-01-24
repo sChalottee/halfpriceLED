@@ -63,7 +63,7 @@ function Home() {
             <Layout>
                 <Header className="headerStyle">
                     <div>
-                        <h1>반값LED</h1>
+                        <h1 className="halfPriceLED">반값LED</h1>
                     </div>
                 </Header>
                 <nav className="navStyle">
@@ -94,7 +94,7 @@ function Home() {
                     />
                 </nav>
                 <Content className="contentStyle">
-                    <Carousel autoplay autoplaySpeed={2000}>
+                    <Carousel autoplay>
                         {parsedImages.map((src, index) => (
                             <div key={index}>
                                 <Image
@@ -108,10 +108,12 @@ function Home() {
                         ))}
                     </Carousel>
 
-                    <div>
+                    <div className="categoryBox">
                         {categories.map((categoryName, index) => (
                             <div key={index} className={categoryName}>
-                                <h2>{categoryName}</h2>
+                                <h2 className="categoryTitle">
+                                    {categoryName}
+                                </h2>
                                 <div className="product-container-flex">
                                     {AllProductInfoArray.map(
                                         (product, productIndex) => {
